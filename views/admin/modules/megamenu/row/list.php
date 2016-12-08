@@ -11,7 +11,7 @@
 	}
 	
 	$query_array = array(
-		'page' => $MODULE_PAGE_ID,
+		'owner' => $OWNER,
 		'column' => $COLUMN_ID,
 	);
 	if ( ! empty($BACK_URL)) {
@@ -131,7 +131,7 @@
 <?php
 	if (empty($BACK_URL)) {
 		$query_array = array(
-			'page' => $MODULE_PAGE_ID,
+			'owner' => $OWNER,
 			'column' => $COLUMN_ID,
 		);
 		$link = Route::url('modules', array(

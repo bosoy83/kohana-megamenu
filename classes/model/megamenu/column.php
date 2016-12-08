@@ -35,9 +35,13 @@ class Model_Megamenu_Column extends ORM_Base {
 			'id' => array(
 				array('digit'),
 			),
-			'page_id' => array(
+			'owner_id' => array(
 				array('not_empty'),
 				array('digit'),
+			),
+			'owner' => array(
+				array('not_empty'),
+				array('max_length', array(':value', 255)),
 			),
 			'title' => array(
 				array('not_empty'),

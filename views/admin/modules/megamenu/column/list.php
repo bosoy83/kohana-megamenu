@@ -4,14 +4,18 @@
 		'breadcrumbs' => $breadcrumbs
 	));
 
-	echo View_Admin::factory('layout/page_select');
+	echo View_Admin::factory('layout/select', array(
+		'options' => $OWNER_LIST,
+		'selected' => $OWNER,
+		'name' => 'owner',
+	));
 
 	if ($list->count() <= 0) {
 		return;
 	}
 	
 	$query_array = array(
-		'page' => $MODULE_PAGE_ID,
+		'owner' => $OWNER,
 	);
 	if ( ! empty($BACK_URL)) {
 		$query_array['back_url'] = $BACK_URL;
@@ -130,7 +134,7 @@
 <?php
 	if (empty($BACK_URL)) {
 		$query_array = array(
-			'page' => $MODULE_PAGE_ID,
+			'owner' => $OWNER,
 		);
 		$link = Route::url('modules', array(
 			'controller' => $CONTROLLER_NAME['column'],

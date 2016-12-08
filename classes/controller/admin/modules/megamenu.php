@@ -7,6 +7,10 @@ class Controller_Admin_Modules_Megamenu extends Controller_Admin_Front {
 	protected $title = 'Mega-menu';
 	protected $sub_title = 'Mega-menu';
 	
+	protected $owner_list = array();
+	protected $owner;
+	protected $owner_config;
+	
 	protected $column_id;
 	
 	protected $controller_name = array(
@@ -22,7 +26,7 @@ class Controller_Admin_Modules_Megamenu extends Controller_Admin_Front {
 	{
 		parent::before();
 	
-		$request = $this->request->current();
+		$request = $this->request;
 		
 		$this->column_id = (int) $request->query('column');
 		$this->template
@@ -35,22 +39,40 @@ class Controller_Admin_Modules_Megamenu extends Controller_Admin_Front {
 		$this->template
 			->bind_global('CONTROLLER_NAME', $this->controller_name);
 	
+		$this->owner_list = $this->get_owner_list();
+		$this->template
+			->bind_global('OWNER_LIST', $this->owner_list);
+		
+		$this->owner = $request->query('owner');
+		if (empty($this->owner)) {
+			$this->owner =key($this->owner_list);
+		}
+		$this->template
+			->bind_global('OWNER', $this->owner);
+			
+		$tmp = explode('::', $this->owner);
+		$this->owner_config = array(
+			'owner' => $tmp[0],
+			'owner_id' => $tmp[1],
+		);
+		unset($tmp);
+			
 		$this->title = __($this->title);
 		$this->sub_title = __($this->sub_title);
 	}
 	
-	protected function get_module_pages($module_key)
+	protected function get_owner_list()
 	{
-		$prop_name = Kohana::$config->load('_megamenu.page_property');
+		$list = Kohana::$config->load('megamenu.owners');
+		$result = array();
+		foreach ($list as $_func) {
+			$_list = $_func();
+			foreach ($_list as $_k => $_t) {
+				$result[$_k] = $_t;
+			}
+		}
 		
-		$helper_property = ORM_Helper::factory('page')->property_helper();
-		$sub = $helper_property->search(array(
-			$prop_name => 'true'
-		), TRUE);
-		
-		return ORM::factory('page')
-			->where('id', 'IN', $sub)
-			->find_all();
+		return $result;
 	}
 	
 	protected function layout_aside()
@@ -63,7 +85,7 @@ class Controller_Admin_Modules_Megamenu extends Controller_Admin_Front {
 		return parent::layout_aside()
 			->set('menu_items', $menu_items)
 			->set('replace', array(
-				'{PAGE_ID}' => $this->module_page_id,
+				'{OWNER}' => urlencode($this->owner),
 				'{COLUMN_ID}' => $this->column_id,
 			));
 	}
@@ -79,7 +101,7 @@ class Controller_Admin_Modules_Megamenu extends Controller_Admin_Front {
 							'link' => Route::url('modules', array(
 								'controller' => $this->controller_name['column'],
 								'action' => 'edit',
-								'query' => 'page={PAGE_ID}'
+								'query' => 'owner={OWNER}'
 							)),
 						),
 					),
@@ -100,7 +122,7 @@ class Controller_Admin_Modules_Megamenu extends Controller_Admin_Front {
 							'link' => Route::url('modules', array(
 								'controller' => $this->controller_name['column'],
 								'action' => 'position',
-								'query' => 'page={PAGE_ID}&mode=fix',
+								'query' => 'owner={OWNER}&mode=fix',
 							)),
 						),
 					),
@@ -121,7 +143,7 @@ class Controller_Admin_Modules_Megamenu extends Controller_Admin_Front {
 				'title' => __('Row list'),
 				'link' => Route::url('modules', array(
 					'controller' => $this->controller_name['row'],
-					'query' => 'page={PAGE_ID}&column={COLUMN_ID}'.$back_url,
+					'query' => 'owner={OWNER}&column={COLUMN_ID}'.$back_url,
 				)),
 				'sub' => array()
 			),
@@ -145,7 +167,7 @@ class Controller_Admin_Modules_Megamenu extends Controller_Admin_Front {
 							'link' => Route::url('modules', array(
 								'controller' => $this->controller_name['row'],
 								'action' => 'edit',
-								'query' => 'page={PAGE_ID}&column={COLUMN_ID}'.$back_url,
+								'query' => 'owner={OWNER}&column={COLUMN_ID}'.$back_url,
 							)),
 						),
 					),
@@ -173,7 +195,7 @@ class Controller_Admin_Modules_Megamenu extends Controller_Admin_Front {
 							'link' => Route::url('modules', array(
 								'controller' => $this->controller_name['row'],
 								'action' => 'position',
-								'query' => 'page={PAGE_ID}&column={COLUMN_ID}&mode=fix'.$back_url,
+								'query' => 'owner={OWNER}&column={COLUMN_ID}&mode=fix'.$back_url,
 							)),
 						),
 					),

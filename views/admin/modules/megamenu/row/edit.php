@@ -9,7 +9,7 @@
 	$required = $orm->required_fields();
 
 	$query_array = array(
-		'page' => $MODULE_PAGE_ID,
+		'owner' => $OWNER,
 		'column' => $COLUMN_ID,
 	);
 	if ( ! empty($BACK_URL)) {

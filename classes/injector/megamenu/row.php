@@ -11,15 +11,15 @@ class Injector_Megamenu_Row extends Injector_Base {
 		$helper_acl->inject(Arr::get($module_config, 'a2'));
 	}
 	
-	public function get_hook($page_id, $column_id)
+	public function get_hook($owner, $column_id)
 	{
 		return array(
 			array($this, 'hook_callback'),
-			array($page_id, $column_id)
+			array($owner, $column_id)
 		);
 	}
 	
-	public function hook_callback($content, $page_id, $column_id)
+	public function hook_callback($content, $owner, $column_id)
 	{
 		$request = $this->request;
 		$back_url = $request->url();
@@ -31,7 +31,7 @@ class Injector_Megamenu_Row extends Injector_Base {
 		unset($query_array);
 	
 		$query_array = array(
-			'page' => $page_id,
+			'owner' => $owner,
 			'column' => $column_id,
 			'back_url' => $back_url,
 			'content_only' => TRUE
@@ -70,7 +70,7 @@ class Injector_Megamenu_Row extends Injector_Base {
 		} else {
 			$link = Route::url('modules', array(
 				'controller' => $this->controller_name['row'],
-				'query' => 'page={PAGE_ID}&column={COLUMN_ID}'.$back_url,
+				'query' => 'owner={OWNER}&column={COLUMN_ID}'.$back_url,
 			));
 			$class = FALSE;
 		}
@@ -98,7 +98,7 @@ class Injector_Megamenu_Row extends Injector_Base {
 							'link' => Route::url('modules', array(
 								'controller' => $this->controller_name,
 								'action' => 'edit',
-								'query' => 'page={PAGE_ID}&column={COLUMN_ID}&back_url='.$back_url,
+								'query' => 'owner={OWNER}&column={COLUMN_ID}&back_url='.$back_url,
 							)),
 						),
 					),
@@ -121,9 +121,9 @@ class Injector_Megamenu_Row extends Injector_Base {
 							'title' => __('Fix positions'),
  							'class' => 'js-menu-item-row-fix',
 							'link' => Route::url('modules', array(
-								'controller' => $this->controller_name['row'],
+								'controller' => $this->controller_name,
 								'action' => 'position',
-								'query' => 'page={PAGE_ID}&column={COLUMN_ID}&mode=fix&back_url='.$back_url,
+								'query' => 'owner={OWNER}&column={COLUMN_ID}&mode=fix&back_url='.$back_url,
 							)),
 						),
 					),

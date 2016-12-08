@@ -7,7 +7,7 @@ class ORM_Helper_Megamenu_Column extends ORM_Helper {
 	
 	protected $_position_fields = array(
 		'position' => array(
-			'group_by' => array('page_id'),
+			'group_by' => array('owner', 'owner_id'),
 		),
 	);
 

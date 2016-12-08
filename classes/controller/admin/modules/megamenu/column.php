@@ -4,9 +4,10 @@ class Controller_Admin_Modules_Megamenu_Column extends Controller_Admin_Modules_
 
 	public function action_index()
 	{
-		$orm = ORM::factory('megamenu_Column')
-			->where('page_id', '=', $this->module_page_id);
-
+		$orm = ORM::factory('Megamenu_Column')
+			->where('owner_id', '=', $this->owner_config['owner_id'])
+			->where('owner', '=', $this->owner_config['owner']);
+		
 		$paginator_orm = clone $orm;
 		$paginator = new Paginator('admin/layout/paginator');
 		$paginator
@@ -31,15 +32,16 @@ class Controller_Admin_Modules_Megamenu_Column extends Controller_Admin_Modules_
 
 	public function action_edit()
 	{
-		$request = $this->request->current();
+		$request = $this->request;
 		
 		$id = (int) $request->param('id');
-		$helper_orm = ORM_Helper::factory('megamenu_Column');
+		$helper_orm = ORM_Helper::factory('Megamenu_Column');
 		$orm = $helper_orm->orm();
 		if ( (bool) $id) {
 			$orm
 				->and_where('id', '=', $id)
-				->and_where('page_id', '=', $this->module_page_id)
+				->where('owner_id', '=', $this->owner_config['owner_id'])
+				->where('owner', '=', $this->owner_config['owner'])
 				->find();
 			
 			if ( ! $orm->loaded() OR ! $this->acl->is_allowed($this->user, $orm, 'edit')) {
@@ -52,7 +54,7 @@ class Controller_Admin_Modules_Megamenu_Column extends Controller_Admin_Modules_
 		
 		if (empty($this->back_url)) {
 			$query_array = array(
-				'page' => $this->module_page_id,
+				'owner' => $this->owner,
 			);
 			$query_array = Paginator::query($request, $query_array);
 			$this->back_url = Route::url('modules', array(
@@ -76,7 +78,8 @@ class Controller_Admin_Modules_Megamenu_Column extends Controller_Admin_Modules_
 					$reload = FALSE;
 				} else {
 					$orm->creator_id = $this->user->id;
-					$orm->page_id = $this->module_page_id;
+					$orm->owner_id = $this->owner_config['owner_id'];
+					$orm->owner = $this->owner_config['owner'];
 					$reload = TRUE;
 				}
 			
@@ -117,7 +120,7 @@ class Controller_Admin_Modules_Megamenu_Column extends Controller_Admin_Modules_
 			$injector = $this->injectors['rows'];
 			if ($orm->loaded()) {
 				try {
-					$this->hook_list_content[] = $injector->get_hook($this->module_page_id, $orm->id);
+					$this->hook_list_content[] = $injector->get_hook($this->owner, $orm->id);
 			
 					$this->menu_left_add( $injector->menu_list() );
 					$this->menu_left_add( $injector->menu_add($orm->rows) );
@@ -139,14 +142,15 @@ class Controller_Admin_Modules_Megamenu_Column extends Controller_Admin_Modules_
 
 	public function action_delete()
 	{
-		$request = $this->request->current();
+		$request = $this->request;
 		$id = (int) $request->param('id');
 	
-		$helper_orm = ORM_Helper::factory('megamenu_Column');
+		$helper_orm = ORM_Helper::factory('Megamenu_Column');
 		$orm = $helper_orm->orm();
 		$orm
 			->and_where('id', '=', $id)
-			->and_where('page_id', '=', $this->module_page_id)
+			->where('owner_id', '=', $this->owner_config['owner_id'])
+			->where('owner', '=', $this->owner_config['owner'])
 			->find();
 	
 		if ( ! $orm->loaded() OR ! $this->acl->is_allowed($this->user, $orm, 'edit')) {
@@ -156,7 +160,7 @@ class Controller_Admin_Modules_Megamenu_Column extends Controller_Admin_Modules_
 		if ($this->element_delete($helper_orm)) {
 			if (empty($this->back_url)) {
 				$query_array = array(
-					'page' => $this->module_page_id,
+					'owner' => $this->owner,
 				);
 				$this->back_url = Route::url('modules', array(
 					'controller' => $this->controller_name['column'],
@@ -171,11 +175,11 @@ class Controller_Admin_Modules_Megamenu_Column extends Controller_Admin_Modules_
 	
 	public function action_position()
 	{
-		$request = $this->request->current();
+		$request = $this->request;
 		$id = (int) $request->param('id');
 		$mode = $request->query('mode');
 		$errors = array();
-		$helper_orm = ORM_Helper::factory('megamenu_Column');
+		$helper_orm = ORM_Helper::factory('Megamenu_Column');
 
 		try {
 			$this->element_position($helper_orm, $id, $mode);
@@ -186,7 +190,7 @@ class Controller_Admin_Modules_Megamenu_Column extends Controller_Admin_Modules_
 		if (empty($errors)) {
 			if (empty($this->back_url)) {
 				$query_array = array(
-					'page' => $this->module_page_id,
+					'owner' => $this->owner,
 				);
 				if ($mode != 'fix') {
 					$query_array = Paginator::query($request, $query_array);
@@ -207,11 +211,11 @@ class Controller_Admin_Modules_Megamenu_Column extends Controller_Admin_Modules_
 	{
 		$breadcrumbs = parent::_get_breadcrumbs();
 	
-		$request = $this->request->current();
+		$request = $this->request;
 		if (in_array($request->action(), array('edit'))) {
 				
 			$id = (int) $request->param('id');
-			$orm = ORM::factory('megamenu_Column')
+			$orm = ORM::factory('Megamenu_Column')
 				->where('id', '=', $id)
 				->find();
 			

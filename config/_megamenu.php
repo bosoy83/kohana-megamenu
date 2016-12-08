@@ -10,5 +10,4 @@ return array(
 		'image' => __('image'),
 		'text' => __('text'),
 	),
-	'page_property' => 'PageMegamenu',
 );

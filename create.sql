@@ -1,6 +1,7 @@
 CREATE TABLE `megamenu_columns` (
 	`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`page_id` INT(10) UNSIGNED NOT NULL DEFAULT '0',
+	`owner_id` INT(10) UNSIGNED NOT NULL DEFAULT '0',
+	`owner` VARCHAR(255) NOT NULL DEFAULT '',
 	`title` VARCHAR(255) NOT NULL DEFAULT '',
 	`mobile_visibility` ENUM('show','hide') NOT NULL DEFAULT 'show',
 	`link` VARCHAR(255) NOT NULL DEFAULT '',
