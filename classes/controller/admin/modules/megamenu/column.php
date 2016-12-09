@@ -4,9 +4,11 @@ class Controller_Admin_Modules_Megamenu_Column extends Controller_Admin_Modules_
 
 	public function action_index()
 	{
+		$owner = $this->get_owner();
+		
 		$orm = ORM::factory('Megamenu_Column')
-			->where('owner_id', '=', $this->owner_config['owner_id'])
-			->where('owner', '=', $this->owner_config['owner']);
+			->where('owner_id', '=', $owner['owner_id'])
+			->where('owner', '=', $owner['owner']);
 		
 		$paginator_orm = clone $orm;
 		$paginator = new Paginator('admin/layout/paginator');
@@ -34,14 +36,15 @@ class Controller_Admin_Modules_Megamenu_Column extends Controller_Admin_Modules_
 	{
 		$request = $this->request;
 		
+		$owner = $this->get_owner();
 		$id = (int) $request->param('id');
 		$helper_orm = ORM_Helper::factory('Megamenu_Column');
 		$orm = $helper_orm->orm();
 		if ( (bool) $id) {
 			$orm
 				->and_where('id', '=', $id)
-				->where('owner_id', '=', $this->owner_config['owner_id'])
-				->where('owner', '=', $this->owner_config['owner'])
+				->where('owner_id', '=', $owner['owner_id'])
+				->where('owner', '=', $owner['owner'])
 				->find();
 			
 			if ( ! $orm->loaded() OR ! $this->acl->is_allowed($this->user, $orm, 'edit')) {
@@ -78,8 +81,8 @@ class Controller_Admin_Modules_Megamenu_Column extends Controller_Admin_Modules_
 					$reload = FALSE;
 				} else {
 					$orm->creator_id = $this->user->id;
-					$orm->owner_id = $this->owner_config['owner_id'];
-					$orm->owner = $this->owner_config['owner'];
+					$orm->owner_id = $owner['owner_id'];
+					$orm->owner = $owner['owner'];
 					$reload = TRUE;
 				}
 			
@@ -143,14 +146,16 @@ class Controller_Admin_Modules_Megamenu_Column extends Controller_Admin_Modules_
 	public function action_delete()
 	{
 		$request = $this->request;
+		
+		$owner = $this->get_owner();
 		$id = (int) $request->param('id');
 	
 		$helper_orm = ORM_Helper::factory('Megamenu_Column');
 		$orm = $helper_orm->orm();
 		$orm
 			->and_where('id', '=', $id)
-			->where('owner_id', '=', $this->owner_config['owner_id'])
-			->where('owner', '=', $this->owner_config['owner'])
+			->where('owner_id', '=', $owner['owner_id'])
+			->where('owner', '=', $owner['owner'])
 			->find();
 	
 		if ( ! $orm->loaded() OR ! $this->acl->is_allowed($this->user, $orm, 'edit')) {

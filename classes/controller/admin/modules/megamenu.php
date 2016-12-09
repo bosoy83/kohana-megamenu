@@ -49,16 +49,25 @@ class Controller_Admin_Modules_Megamenu extends Controller_Admin_Front {
 		}
 		$this->template
 			->bind_global('OWNER', $this->owner);
-			
-		$tmp = explode('::', $this->owner);
-		$this->owner_config = array(
-			'owner' => $tmp[0],
-			'owner_id' => $tmp[1],
-		);
-		unset($tmp);
-			
+		
 		$this->title = __($this->title);
 		$this->sub_title = __($this->sub_title);
+	}
+	
+	protected function get_owner()
+	{
+		$result = array(
+			'owner' => NULL,
+			'owner_id' => NULL,
+		);
+		if ( ! empty($this->owner)) {
+			$tmp = explode('::', $this->owner);
+			$result['owner'] = $tmp[0];
+			$result['owner_id'] = $tmp[1];
+			unset($tmp);
+		}
+		
+		return $result;
 	}
 	
 	protected function get_owner_list()

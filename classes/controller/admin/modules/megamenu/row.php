@@ -8,10 +8,12 @@ class Controller_Admin_Modules_Megamenu_Row extends Controller_Admin_Modules_Meg
 	{
 		parent::before();
 		
+		$owner = $this->get_owner();
+		
 		$this->column = ORM::factory('Megamenu_Column')
 			->and_where('id', '=', $this->column_id)
-			->where('owner_id', '=', $this->owner_config['owner_id'])
-			->where('owner', '=', $this->owner_config['owner'])
+			->where('owner_id', '=', $owner['owner_id'])
+			->where('owner', '=', $owner['owner'])
 			->find();
 		
 		if ( ! $this->column->loaded()) {
