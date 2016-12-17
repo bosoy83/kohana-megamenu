@@ -216,7 +216,7 @@ class Controller_Admin_Modules_Megamenu extends Controller_Admin_Front {
 	protected function _get_breadcrumbs()
 	{
 		$query_array = array(
-			'page' => $this->module_page_id,
+			'owner' => $this->owner,
 		);
 		return array(
 			array(

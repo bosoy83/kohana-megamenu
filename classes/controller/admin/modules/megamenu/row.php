@@ -230,15 +230,6 @@ class Controller_Admin_Modules_Megamenu_Row extends Controller_Admin_Modules_Meg
 		
 		$request = $this->request;
 		if (in_array($request->action(), array('edit'))) {
-			$query_array = Paginator::query($request, $query_array);
-			$breadcrumbs[] = array(
-				'title' => __('Row list'),
-				'link' => Route::url('modules', array(
-					'controller' => $this->controller_name['row'],
-					'query' => Helper_Page::make_query_string($query_array),
-				))
-			);
-			
 			$id = (int) $request->param('id');
 			$orm = ORM::factory('Megamenu_Row')
 				->where('id', '=', $id)
@@ -247,11 +238,7 @@ class Controller_Admin_Modules_Megamenu_Row extends Controller_Admin_Modules_Meg
 				$breadcrumbs[] = array(
 					'title' => $orm->title.' ['.__('row edition').']',
 				);
-			} else {
-				$breadcrumbs[] = array(
-					'title' => ' ['.__('new row').']',
-				);
-			}
+			} 
 		} elseif (in_array($request->action(), array('index'))) {
 			$breadcrumbs[] = array(
 				'title' => __('Row list'),
